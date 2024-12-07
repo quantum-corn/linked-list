@@ -92,23 +92,63 @@ const linkedList = function () {
     return node;
   };
 
-  const find = function () {};
+  const find = function (targetValue) {
+    let index = null;
+    index = traverse((node, index, result) => {
+      if (node.value == targetValue) {
+        result.value = index;
+        result.done = true;
+      }
+      return result;
+    });
+    return index;
+  };
 
-  const contains = function () {};
+  const contains = function (targetValue) {
+    let found = false;
+    if (find(targetValue) != null) {
+      found = true;
+    }
+    return found;
+  };
 
   const toString = function () {
     let string = "( ";
     string = traverse((node, index, result) => {
-      result.value += node.value+' ) -> ( ';
+      result.value += node.value + " ) -> ( ";
       return result;
     });
-    string += '\b\bnull';
+    string += "\b\bnull";
     return string;
   };
 
-  const insertAt = function () {};
+  const insertAt = function (value, targetIndex) {
+    if (targetIndex == 0) prepend(value);
+    else if (targetIndex == length) append(value);
+    else {
+      let currentNode = at(targetIndex);
+      let previous = backstep(currentNode);
+      let newNode = Node(value, currentNode);
+      previous.nextNode = newNode;
+      length++;
+    }
+  };
 
-  const removeAt = function () {};
+  const removeAt = function (targetIndex) {
+    if (targetIndex == length-1) pop();
+    else {
+      let currentNode = at(targetIndex);
+      let next = currentNode.nextNode;
+      length--;
+      if (targetIndex == 0) {
+        headNode = next;
+      }
+      else{
+        let previous = backstep(currentNode);
+        previous.nextNode = next;
+      }
+    }
+  };
 
   return {
     append,
