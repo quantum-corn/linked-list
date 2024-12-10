@@ -1,11 +1,11 @@
-const Node = function (value, nextNode) {
+const Node = function (value, nextNode = null) {
   return {
     value: value,
     nextNode: nextNode,
   };
 };
 
-const linkedList = function () {
+const LinkedList = function () {
   let headNode = null;
   let tailNode = null;
   let length = 0;
@@ -17,7 +17,7 @@ const linkedList = function () {
       done: false,
     };
     let index = 0;
-    while (currentNode.nextNode != null) {
+    while (currentNode != null) {
       result = func(currentNode, index, result);
       index++;
       if (result.done == true) break;
@@ -31,7 +31,10 @@ const linkedList = function () {
     if (tailNode == null) {
       headNode = newNode;
       tailNode = newNode;
-    } else tailNode.nextNode = newNode;
+    } else {
+      tailNode.nextNode = newNode;
+      tailNode = newNode;
+    }
     length++;
   };
 
@@ -82,7 +85,7 @@ const linkedList = function () {
   };
 
   const at = function (targetIndex) {
-    let node = traverse((node, index) => {
+    let node = traverse((node, index, result) => {
       if (index == targetIndex) {
         result.value = node;
         result.done = true;
@@ -114,10 +117,12 @@ const linkedList = function () {
 
   const toString = function () {
     let string = "( ";
-    string = traverse((node, index, result) => {
-      result.value += node.value + " ) -> ( ";
+    let newString = traverse((node, index, result) => {
+      result.value += result.value == null ? '\b\b\b\b'+node.value : node.value;
+      result.value += " ) -> ( ";
       return result;
     });
+    string += newString == null ? '' : newString;
     string += "\b\bnull";
     return string;
   };
@@ -135,15 +140,14 @@ const linkedList = function () {
   };
 
   const removeAt = function (targetIndex) {
-    if (targetIndex == length-1) pop();
+    if (targetIndex == length - 1) pop();
     else {
       let currentNode = at(targetIndex);
       let next = currentNode.nextNode;
       length--;
       if (targetIndex == 0) {
         headNode = next;
-      }
-      else{
+      } else {
         let previous = backstep(currentNode);
         previous.nextNode = next;
       }
@@ -165,3 +169,35 @@ const linkedList = function () {
     toString,
   };
 };
+
+let list = LinkedList();
+
+console.log(list.toString());
+list.append("cat");
+console.log(list.toString());
+list.append("parrot");
+console.log(list.toString());
+list.append("hamster");
+console.log(list.toString());
+list.prepend("dog");
+console.log(list.toString());
+list.append("snake");
+console.log(list.toString());
+list.append("turtle");
+console.log(list.toString());
+list.prepend("rabbit");
+console.log(list.toString());
+console.log(list.head());
+console.log(list.tail());
+console.log(list.at(list.size() - 3));
+console.log(list.find("cat"));
+console.log(list.contains("hamster"));
+
+list.insertAt("wolf", 3);
+console.log(list.toString());
+
+console.log(list.pop());
+console.log(list.toString());
+
+list.removeAt(4);
+console.log(list.toString());
